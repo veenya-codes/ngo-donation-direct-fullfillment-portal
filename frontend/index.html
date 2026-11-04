@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Donation Mediator Platform (MVP)</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: #f0f2f5;
+            font-size: 26px;
+            color: #1a202c;
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px;
+            background: #2c3e50;
+            color: white;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            font-size: 50px;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 26px;
+            margin: 0;
+            opacity: 0.95;
+        }
+
+        .analytics-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .analytics-card {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .analytics-card h4 {
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .analytics-card div {
+            font-size: 48px;
+            font-weight: 800;
+            margin-top: 10px;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            padding: 12px 24px;
+            font-size: 20px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        @media (max-width: 1400px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            min-height: 85vh;
+            overflow: hidden;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .panel h2 {
+            font-size: 34px;
+            margin-top: 0;
+            margin-bottom: 35px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .panel h3 {
+            font-size: 26px;
+            margin-top: 40px;
+            color: #2d3748;
+            border-bottom: 4px solid #cbd5e0;
+            padding-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .donor-title {
+            border-left: 10px solid #2ecc71;
+            padding-left: 20px;
+            color: #2ecc71;
+        }
+
+        .ngo-title {
+            border-left: 10px solid #3498db;
+            padding-left: 20px;
+            color: #3498db;
+        }
+
+        .orphanage-title {
+            border-left: 10px solid #9b59b6;
+            padding-left: 20px;
+            color: #9b59b6;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border: 3px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            font-size: 24px;
+            line-height: 1.6;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .urgent-card {
+            border: 4px solid #e53e3e !important;
+            background: #fff5f5;
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% {
+                box-shadow: 0 0 0 0 rgba(229, 62, 98, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(229, 62, 98, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(229, 62, 98, 0);
+            }
+        }
+
+        .urgent-badge {
+            background: #e53e3e;
+            color: white;
+            font-weight: 900;
+            padding: 4px 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            align-self: flex-start;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .card strong {
+            font-size: 30px;
+            color: #1a202c;
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .cat-tag {
+            font-size: 16px;
+            background: #edf2f7;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #4a5568;
+            align-self: flex-start;
+            margin-bottom: 8px;
+        }
+
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 20px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 22px;
+            width: 100%;
+            margin-top: 20px;
+            text-transform: uppercase;
+            white-space: normal;
+        }
+
+        button:hover {
+            background: #1a252f;
+        }
+
+        .timeline-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .step {
+            color: #a0aec0;
+            text-transform: uppercase;
+        }
+
+        .step.active {
+            color: #2b6cb0;
+            font-weight: 900;
+        }
+
+        .step.done {
+            color: #2f855a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 8px 20px;
+            font-size: 20px;
+            font-weight: 800;
+            border-radius: 40px;
+            background: #e2e8f0;
+            color: #4a5568;
+            margin-top: 12px;
+            text-transform: uppercase;
+        }
+
+        .status-Ordered {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .status-Shipped {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        .status-Delivered {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 22px;
+            border: 3px solid #cbd5e0;
+            border-radius: 12px;
+            font-size: 22px;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 22px;
+            margin-bottom: 22px;
+            font-weight: bold;
+            color: #e53e3e;
+        }
+
+        .checkbox-container input {
+            width: auto;
+            margin: 0;
+            transform: scale(1.8);
+        }
+
+        .placeholder-text {
+            color: #a0aec0;
+            font-style: italic;
+            font-size: 22px;
+            display: block;
+            padding: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h2> NGO Donation Portal (Direct-Fulfillment)</h2>
+        <p>A Unified Live Framework for Public Donors, Mediators, and Beneficiaries</p>
+    </div>
+
+    <div class="analytics-container">
+
+        <div class="analytics-card">
+            <h4>Total Financial Impact Generated</h4>
+            <div id="statFunds">₹0.00</div>
+        </div>
+
+        <div class="analytics-card"
+            style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+            <h4>Total Resource Distributions Completed</h4>
+            <div id="statDeliveries">0 Deliveries</div>
+        </div>
+
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active" onclick="setCategoryFilter('All', this)">
+            All Items
+        </button>
+
+        <button class="filter-btn" onclick="setCategoryFilter('Food', this)">
+            Food & Groceries
+        </button>
+
+        <button class="filter-btn" onclick="setCategoryFilter('Medical', this)">
+            Medical Supplies
+        </button>
+
+        <button class="filter-btn" onclick="setCategoryFilter('Clothing', this)">
+            Clothing
+        </button>
+
+        <button class="filter-btn" onclick="setCategoryFilter('Education', this)">
+            Education
+        </button>
+    </div>
+
+    <div class="grid">
+
+        <div class="panel">
+            <h2 class="donor-title">Public Donor View</h2>
+
+            <h3>Available Marketplace Wishlists</h3>
+            <div id="donorWishlist">
+                <span class="placeholder-text">Loading items...</span>
+            </div>
+
+            <h3>Your Order Timelines</h3>
+            <div id="donorOrders">
+                <span class="placeholder-text">No active tracking records.</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="ngo-title">NGO Admin Dashboard</h2>
+
+            <h3>Active Logistical Pipelines</h3>
+            <div id="ngoOrders">
+                <span class="placeholder-text">No incoming orders.</span>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="orphanage-title">Orphanage View</h2>
+
+            <h3>Request Urgent Supplies</h3>
+
+            <input type="text" id="reqName"
+                placeholder="Item Name (e.g., Rice Bag 25kg)">
+
+            <input type="number" id="reqPrice"
+                placeholder="Estimated Price (INR)">
+
+            <input type="text" id="reqOrg"
+                placeholder="Your Center Name (e.g., St. Mary Home)">
+
+            <select id="reqCategory">
+                <option value="Food">Food & Groceries</option>
+                <option value="Medical">Medical Supplies</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Education">Education</option>
+            </select>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="reqUrgent">
+                <label for="reqUrgent">
+                    ⚠️ Mark as High-Urgency Supply Need
+                </label>
+            </div>
+
+            <button onclick="submitRequest()">
+                Post Need to Marketplace
+            </button>
+
+            <h3>Incoming Shipments Alerts</h3>
+
+            <div id="orphanageTracking">
+                Waiting for inbound shipping notices...
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8080/api";
+        let activeCategoryFilter = "All";
+
+        function setCategoryFilter(category, button) {
+            activeCategoryFilter = category;
+
+            document.querySelectorAll(".filter-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+            loadAllData();
+        }
+
+        function generateProgressTimelineHtml(status) {
+            const steps = ["Ordered", "Shipped", "Delivered"];
+            const currentIndex = steps.indexOf(status);
+
+            return `
+                <div class="timeline-container">
+                    ${steps.map((step, index) => {
+                        let className = "step";
+
+                        if (index === currentIndex) {
+                            className += " active";
+                        } else if (index < currentIndex) {
+                            className += " done";
+                        }
+
+                        const symbol = step === "Delivered"
+                            ? "🏁"
+                            : index < currentIndex ? "✅" : "⭕";
+
+                        return `<span class="${className}">${symbol} ${step}</span>`;
+                    }).join("")}
+                </div>
+            `;
+        }
+
+        async function postData(url, data) {
+            return fetch(`${API_BASE}${url}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+        }
+
+        async function loadAllData() {
+            try {
+                const analytics = await (await fetch(`${API_BASE}/analytics`)).json();
+
+                document.getElementById("statFunds").innerText =
+                    `₹${analytics.totalFunds.toFixed(2)}`;
+
+                document.getElementById("statDeliveries").innerText =
+                    `${analytics.completedDeliveries} Deliveries`;
+
+                const itemResponse = await fetch(`${API_BASE}/items`);
+
+                if (!itemResponse.ok) {
+                    throw new Error("API error");
+                }
+
+                const items = await itemResponse.json();
+
+                const visibleItems = items.filter(item =>
+                    activeCategoryFilter === "All" ||
+                    item.category === activeCategoryFilter
+                );
+
+                document.getElementById("donorWishlist").innerHTML =
+                    visibleItems.map(item => `
+                        <div class="card ${item.isUrgent ? "urgent-card" : ""}">
+                            ${item.isUrgent ? '<span class="urgent-badge">🚨 HIGH URGENCY</span>' : ""}
+                            <strong>📦 ${item.name}</strong>
+                            <span class="cat-tag">${item.category}</span>
+                            <div>Price: <strong>₹${item.price.toFixed(2)}</strong></div>
+                            <span style="color:#4a5568; font-size:20px; display:block; margin-top:10px; font-weight:600;">
+                                📍 Center: ${item.requestedBy}
+                            </span>
+                            <button onclick="buyItem('${item.name}', ${item.price})">
+                                Instant Purchase
+                            </button>
+                        </div>
+                    `).join("") || "No listings inside this category.";
+
+                const orders = await (await fetch(`${API_BASE}/orders`)).json();
+
+                let donorOrderHtml = "";
+                let ngoOrderHtml = "";
+                let orphanageHtml = "";
+
+                orders.forEach(order => {
+                    const trackingCard = `
+                        <div class="card">
+                            <strong>Order #${order.id}: ${order.itemName}</strong>
+                            <div>Pipeline Milestone:</div>
+                            ${generateProgressTimelineHtml(order.status)}
+                        </div>
+                    `;
+
+                    donorOrderHtml += trackingCard;
+
+                    if (order.status === "Shipped" || order.status === "Delivered") {
+                        orphanageHtml += trackingCard;
+                    }
+
+                    if (order.status !== "Delivered") {
+                        const nextStatus = order.status === "Ordered"
+                            ? "Shipped"
+                            : "Delivered";
+
+                        ngoOrderHtml += `
+                            <div class="card">
+                                <strong>Order #${order.id}: ${order.itemName}</strong>
+                                <div>
+                                    Pipeline State:
+                                    <span class="status-badge status-${order.status}">
+                                        ${order.status}
+                                    </span>
+                                </div>
+                                <button style="background:#3498db"
+                                    onclick="updateOrder(${order.id}, '${nextStatus}')">
+                                    Dispatch to ${nextStatus}
+                                </button>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById("donorOrders").innerHTML =
+                    donorOrderHtml || "No items ordered yet.";
+
+                document.getElementById("ngoOrders").innerHTML =
+                    ngoOrderHtml || "All orders fully processed! 🎉";
+
+                document.getElementById("orphanageTracking").innerHTML =
+                    orphanageHtml || "No shipments in transit.";
+
+            } catch (error) {
+                document.getElementById("donorWishlist").innerHTML =
+                    "⚠️ Connection Offline: Make sure your Spring Boot Application is actively running on port 8080!";
+            }
+        }
+
+        async function buyItem(name, price) {
+            await postData("/orders", {
+                itemName: name,
+                price: price
+            });
+
+            loadAllData();
+        }
+
+        async function updateOrder(id, nextStatus) {
+            await postData("/orders/update", {
+                id: id,
+                status: nextStatus
+            });
+
+            loadAllData();
+        }
+
+        async function submitRequest() {
+            const name = document.getElementById("reqName").value;
+            const price = document.getElementById("reqPrice").value;
+            const org = document.getElementById("reqOrg").value;
+            const category = document.getElementById("reqCategory").value;
+            const isUrgent = document.getElementById("reqUrgent").checked;
+
+            if (!name || !price || !org) {
+                return alert("Please fill out all fields!");
+            }
+
+            try {
+                const response = await postData("/items/request", {
+                    name: name,
+                    price: price,
+                    orphanage: org,
+                    category: category,
+                    isUrgent: isUrgent
+                });
+
+                const message = await response.text();
+
+                if (!response.ok) {
+                    alert("Request failed: " + message);
+                    return;
+                }
+
+                alert("Item successfully added!");
+
+                document.getElementById("reqName").value = "";
+                document.getElementById("reqPrice").value = "";
+                document.getElementById("reqOrg").value = "";
+                document.getElementById("reqUrgent").checked = false;
+
+                loadAllData();
+
+            } catch (error) {
+                alert("Unable to connect to the server: " + error.message);
+            }
+        }
+
+        setInterval(loadAllData, 2000);
+        window.onload = loadAllData;
+    </script>
+
+</body>
+</html>
