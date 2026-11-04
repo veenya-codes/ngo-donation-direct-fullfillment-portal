@@ -15,8 +15,8 @@ import java.util.*;
 public class NgoApplication {
 
     private static final String dburl = "jdbc:mysql://127.0.0.1:3306/ngo_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String user = "root";
-    private static final String pwd = "Lishvik@25";
+    private static final String user = "MYSQL_USERNAME";
+    private static final String pwd = "MYSQL_PASSWORD";
 
     public static void main(String[] args) {
         new Thread(new TcpNotificationServer()).start();
